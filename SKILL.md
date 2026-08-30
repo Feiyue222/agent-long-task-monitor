@@ -6,7 +6,9 @@ description: Monitor long-running local commands without repeatedly polling them
 # Agent Long Task Monitor
 
 Use this skill when a local command is expected to run longer than about 30
-minutes, or once it crosses that threshold.
+minutes, or once it crosses that threshold. The goal is to move continuous
+observation out of the coding conversation: after one genuine health check,
+stop polling and let a human watch the independent monitor.
 
 1. Determine whether the task can publish authoritative counters. If not, use
    `processed: null` and `total: null`; never infer progress from time or logs.

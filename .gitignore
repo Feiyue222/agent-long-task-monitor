@@ -4,8 +4,8 @@
 *.stderr.log
 examples/**/status.json
 examples/**/artifact.txt
+examples/30-second-demo/runtime/
 
 # PowerShell editor and test output
 TestResults.xml
 .vs/
-
