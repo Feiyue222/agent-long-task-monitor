@@ -17,7 +17,10 @@ function Read-JsonSafely { param([string]$Path) Get-Content -LiteralPath $Path -
 $HealthCheckStartedAt = [datetimeoffset]::Now
 $InitialHeartbeat = $null
 if (Test-Path -LiteralPath $HealthPath -PathType Leaf) { try { $InitialHeartbeat = Read-JsonSafely $HealthPath } catch { $InitialHeartbeat = $null } }
-Start-Sleep -Seconds $RefreshSeconds
+$GraceSeconds = [math]::Max(2, [math]::Min(5, $RefreshSeconds))
+# One bounded health transaction waits a full refresh interval plus a small
+# scheduling grace so a monitor refresh at the interval boundary is observable.
+Start-Sleep -Seconds ($RefreshSeconds + $GraceSeconds)
 $CheckedAt = [datetimeoffset]::Now
 $MaxHeartbeatAgeSeconds = [math]::Max(15, (2 * $RefreshSeconds) + 5)
 $Failures = New-Object 'System.Collections.Generic.List[string]'

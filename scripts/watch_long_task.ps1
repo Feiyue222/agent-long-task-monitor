@@ -264,7 +264,10 @@ while ($true) {
         $State = [string](Get-PropertyValue -Object $Status -Name 'state')
         $IsTerminal = @('COMPLETED', 'FAILED', 'BLOCKED', 'INTERRUPTED') -contains $State
         if ($IsTerminal) {
-            if (-not $Once) { Read-Host 'Monitoring finished. Press Enter to close this window.' | Out-Null }
+            if (-not $Once) {
+                Write-Host 'Monitoring finished. Press Enter to close this window.'
+                Read-Host | Out-Null
+            }
             break
         }
     }
