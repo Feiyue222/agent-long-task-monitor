@@ -2,7 +2,7 @@
 param(
     [Parameter(Mandatory = $true)] [string]$StatusPath,
     [string]$HealthPath,
-    [ValidateRange(5, 3600)] [int]$RefreshSeconds = 10,
+    [ValidateRange(1, 3600)] [int]$RefreshSeconds = 10,
     [switch]$EnableGpu,
     [switch]$VerifyHealth,
     [object]$ExpectedTargetProcessId,

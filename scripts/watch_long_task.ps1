@@ -5,7 +5,7 @@ param(
 
     [string]$HealthPath,
 
-    [ValidateRange(5, 3600)]
+    [ValidateRange(1, 3600)]
     [int]$RefreshSeconds = 10,
 
     [switch]$EnableGpu,

@@ -6,7 +6,7 @@ param(
     [Parameter(Mandatory = $true)] [datetimeoffset]$MonitorLaunchTime,
     [object]$ExpectedTargetProcessId,
     [object]$ExpectedSupervisorProcessId,
-    [ValidateRange(5, 3600)] [int]$RefreshSeconds = 10
+    [ValidateRange(1, 3600)] [int]$RefreshSeconds = 10
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
