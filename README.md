@@ -40,18 +40,19 @@ Supervisor owns long-running process
     |
     +--> authoritative status.json
     |
-    v
-Independent monitor
+    |
+Coding agent starts independent monitor
     |
     +--> human watches progress
     |
     +--> monitor-health.json
     |
-    v
-one genuine health check
+Coding agent performs one genuine health check
     |
     v
 AGENT STOPS POLLING
+
+Independent monitor continues for the human.
 ```
 
 ## This is not just a progress bar
@@ -90,6 +91,22 @@ completion evidence.
 When the health check passes, the coding agent stops polling; the monitor keeps
 running independently for the human.
 
+## Install as an Agent Skill
+
+The standards-compliant, self-contained bundle lives at
+[`skills/agent-long-task-monitor/`](skills/agent-long-task-monitor/).
+
+**Current main / pre-v0.2.0:** v0.1.0 does not contain this bundle. Until the
+next tagged release, explicitly pin installation to `main`:
+
+```powershell
+# Codex
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@main --agent codex --scope user
+
+# Claude Code
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@main --agent claude-code --scope user
+```
+
 ## Quick start
 
 1. Have the task or a supervisor atomically write a status file following
@@ -115,9 +132,11 @@ unavailable`. It never infers completion percentage from elapsed time.
 
 ### Strict completion
 
-`processed == total` is not enough. A true numeric 100% requires both
-`state == COMPLETED` and `artifact_validated == true`. Process disappearance is
-never success evidence.
+`processed == total` is not enough. When valid authoritative `processed` /
+`total` counters exist, a true numeric 100% requires both `state == COMPLETED`
+and `artifact_validated == true`. If exact counters are unavailable, successful
+terminal completion may still be shown, but the monitor never invents numeric
+100%. Process disappearance is never success evidence.
 
 ## Local and read-only
 
