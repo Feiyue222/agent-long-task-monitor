@@ -30,7 +30,8 @@ process is not evidence of success.
    .\scripts\start_monitor.ps1 -StatusPath .\status.json -VerifyHealth
    ```
 
-3. After the one health check has passed, the coding agent stops polling. The
+3. After the one health check has passed with a fresh heartbeat from the current
+   monitor instance, the coding agent stops polling. The
    human watches the monitor window and reports a terminal result if needed.
 
 See [integration guidance](docs/INTEGRATION.md), the three quick examples, and

@@ -15,8 +15,9 @@ minutes, or once it crosses that threshold.
    it is appropriate for the supervisor to own a new child process.
 3. Launch the independent monitor with `scripts/start_monitor.ps1`.
 4. Wait at least one full monitor refresh interval and run exactly one genuine
-   health check. It must verify the monitor is alive, its heartbeat is fresh,
-   expected process IDs match, and the authoritative status remains readable.
+   health check. It must verify a fresh heartbeat from the current monitor
+   instance, match heartbeat PIDs against authoritative status, and confirm the
+   authoritative status remains readable.
 5. If healthy, stop polling. The human watches the separate monitor window.
 6. Evaluate terminal success only from terminal lifecycle plus validated
    artifact evidence. A process disappearance never makes a task pass.
@@ -24,4 +25,3 @@ minutes, or once it crosses that threshold.
 Do not spend conversation quota repeatedly checking a healthy long-running
 local process. Ask the human to report the terminal result when interaction is
 needed.
-

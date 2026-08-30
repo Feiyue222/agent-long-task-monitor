@@ -32,7 +32,7 @@ $Status = [ordered]@{
     contract_version = 'agent-long-task-status-v1'; task = $Task; stage = 'STARTING'; state = 'RUNNING'; started_at = [datetimeoffset]::Now.ToString('O')
     processed = $null; total = $null; unit = $null; target_process_id = $null; supervisor_process_id = $SupervisorProcessId
     checkpoint_state = 'NOT_APPLICABLE'; artifact_state = 'PENDING'; artifact_validated = $false; last_error = $null
-    command_display = [System.IO.Path]::GetFileName($FilePath); stdout_path = $StdOutPath; stderr_path = $StdErrPath; native_exit_code = $null
+    command_evidence_policy = 'Arguments are persisted only when the caller has redacted secrets.'; command_executable = $FilePath; command_arguments = @($ArgumentList); stdout_path = $StdOutPath; stderr_path = $StdErrPath; native_exit_code = $null
 }
 Write-StatusAtomically -Path $StatusPath -Status $Status
 
@@ -42,6 +42,7 @@ try {
     $Status.stage = 'RUNNING'
     Write-StatusAtomically -Path $StatusPath -Status $Status
     $TargetProcess.WaitForExit()
+    $TargetProcess.Refresh()
     $NativeExitCode = $TargetProcess.ExitCode
     $Status.completed_at = [datetimeoffset]::Now.ToString('O')
     $Status.native_exit_code = $NativeExitCode
@@ -61,4 +62,3 @@ catch {
     Write-StatusAtomically -Path $StatusPath -Status $Status
     throw
 }
-

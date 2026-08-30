@@ -36,12 +36,12 @@ reference supervisor:
 ```
 
 It retains the `Process` object, waits for it, and records its native exit code.
-It shows only the executable filename in status, not raw arguments. For an
-adopted process, let that process's owner publish the status instead.
+It records `command_executable` and `command_arguments`; callers must redact
+credentials, tokens, and other secrets before passing arguments. For an adopted
+process, let that process's owner publish the status instead.
 
 ## Final states
 
 `COMPLETED` becomes a true 100% display only with `artifact_validated: true`.
 `FAILED`, `BLOCKED`, and `INTERRUPTED` are terminal and remain visibly distinct.
 `PAUSED` remains observable without being silently treated as a pass.
-

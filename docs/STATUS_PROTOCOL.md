@@ -20,7 +20,10 @@ temporary file in the same directory, then rename it into place.
 `processed`, `total`, `unit`, `target_process_id`, and
 `supervisor_process_id` are optional. Set both counters to `null` when exact
 progress is not structurally available. Do not substitute elapsed time, log
-size, or an expected duration.
+size, or an expected duration. Exact counters must be integer-compatible,
+`processed >= 0`, `total > 0`, and `processed <= total`; otherwise exact
+progress is temporarily unavailable and no numeric percentage, rate, or ETA is
+shown.
 
 ## Completion rule
 
@@ -28,6 +31,11 @@ size, or an expected duration.
 100% display is `state == "COMPLETED"` **and**
 `artifact_validated == true`. Otherwise the monitor caps the visible value at
 99.99% and marks finalization pending.
+
+`COMPLETED` with validated artifacts but null counters is successful lifecycle
+evidence, not numeric 100%. Supervisor command evidence records the executable
+and caller-supplied argument vector under a redaction policy: integrations must
+redact credentials, tokens, and other secrets before persistence.
 
 ## Monitor health protocol
 
@@ -44,4 +52,3 @@ The monitor independently writes `agent-long-task-monitor-health-v1` with:
 
 This is evidence that the monitor refreshed; it is never task progress or
 success evidence.
-

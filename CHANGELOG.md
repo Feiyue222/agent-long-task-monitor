@@ -4,4 +4,5 @@
 
 - Initial experimental release of the local PowerShell monitor, status protocol,
   supervisor example, health check, examples, and offline contract tests.
-
+- Hardened release-candidate contracts: independent health paths, current and
+  fresh monitor heartbeats, validated counters, and explicit command evidence.

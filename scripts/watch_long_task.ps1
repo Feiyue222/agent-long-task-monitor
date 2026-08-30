@@ -37,18 +37,19 @@ function Read-AuthoritativeStatus {
     param([string]$Path)
 
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
-        throw "Authoritative status file is missing: $Path"
+        throw "OBSERVATION: Authoritative status file is missing: $Path"
     }
 
-    $Status = Get-Content -LiteralPath $Path -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+    try { $Status = Get-Content -LiteralPath $Path -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop }
+    catch { throw "OBSERVATION: Authoritative status is temporarily unreadable: $($_.Exception.Message)" }
     if ((Get-PropertyValue -Object $Status -Name 'contract_version') -ne 'agent-long-task-status-v1') {
-        throw 'Authoritative status has an unsupported or missing contract_version.'
+        throw 'OBSERVATION: Authoritative status has an unsupported or missing contract_version.'
     }
 
     $AllowedStates = @('RUNNING', 'COMPLETED', 'FAILED', 'BLOCKED', 'INTERRUPTED', 'PAUSED')
     $State = [string](Get-PropertyValue -Object $Status -Name 'state')
     if ($AllowedStates -notcontains $State) {
-        throw "Authoritative status has unsupported state: $State"
+        throw "OBSERVATION: Authoritative status has unsupported state: $State"
     }
     return $Status
 }
@@ -132,7 +133,7 @@ function Get-ProgressObservation {
     catch {
         return [pscustomobject]@{ Exact = $false; Availability = 'temporarily unavailable'; Processed = $null; Total = $null; Percent = $null; Rate = $null; EtaSeconds = $null; EstimatedFinish = $null }
     }
-    if ($TotalValue -le 0 -or $ProcessedValue -lt 0) {
+    if ($TotalValue -le 0 -or $ProcessedValue -lt 0 -or $ProcessedValue -gt $TotalValue) {
         return [pscustomobject]@{ Exact = $false; Availability = 'temporarily unavailable'; Processed = $null; Total = $null; Percent = $null; Rate = $null; EtaSeconds = $null; EstimatedFinish = $null }
     }
 
@@ -194,7 +195,7 @@ function Write-MonitorScreen {
         if ($Progress.EstimatedFinish -ne $null) {
             Write-Host ('Estimated finish: {0:O}' -f $Progress.EstimatedFinish)
         }
-        if ($Progress.Percent -ge 99.99 -and -not ($State -eq 'COMPLETED' -and [bool](Get-PropertyValue -Object $Status -Name 'artifact_validated'))) {
+        if ($Progress.Percent -ge 99.99 -and @('RUNNING', 'PAUSED', 'COMPLETED') -contains $State -and -not ($State -eq 'COMPLETED' -and [bool](Get-PropertyValue -Object $Status -Name 'artifact_validated'))) {
             Write-Host 'FINALIZATION PENDING'
         }
     }
@@ -214,6 +215,14 @@ function Write-MonitorScreen {
 if ([string]::IsNullOrWhiteSpace($HealthPath)) {
     $HealthPath = Join-Path (Split-Path -Parent $StatusPath) 'monitor-health.json'
 }
+$ResolvedStatusPath = [System.IO.Path]::GetFullPath($StatusPath).TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
+$ResolvedHealthPath = [System.IO.Path]::GetFullPath($HealthPath).TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
+if ([string]::Equals($ResolvedStatusPath, $ResolvedHealthPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+    Write-Error 'HealthPath must be independent of StatusPath. Refusing to write authoritative status.'
+    exit 2
+}
+$StatusPath = $ResolvedStatusPath
+$HealthPath = $ResolvedHealthPath
 $NvidiaSmiPath = $null
 if ($EnableGpu) {
     $NvidiaSmiCommand = Get-Command 'nvidia-smi.exe' -ErrorAction SilentlyContinue
@@ -260,8 +269,14 @@ while ($true) {
         }
     }
     catch {
-        Write-Host ('MONITOR ERROR: {0}' -f $_.Exception.Message)
-        if ($Once) { exit 1 }
+        if ($_.Exception.Message -like 'OBSERVATION:*') {
+            Write-Host ('MONITOR OBSERVATION UNAVAILABLE: {0}' -f $_.Exception.Message)
+            if ($Once) { exit 1 }
+        }
+        else {
+            Write-Error ('MONITOR FATAL ERROR: {0}' -f $_.Exception.Message)
+            exit 1
+        }
     }
     if ($Once) { break }
     Start-Sleep -Seconds $RefreshSeconds
