@@ -36,6 +36,29 @@ process is not evidence of success.
 See [integration guidance](docs/INTEGRATION.md), the three quick examples, and
 the offline contract tests in `tests`.
 
+## Quick examples
+
+Run either demo in one terminal, then start the monitor in another terminal
+with its `status.json` path:
+
+```powershell
+# Exact counters: percentage, rate, and ETA become available after movement.
+.\examples\exact-progress\run_exact_progress.ps1
+
+# Lifecycle only: the monitor explicitly reports unavailable exact progress.
+.\examples\no-exact-progress\run_no_exact_progress.ps1
+
+# Failing target: preserves FAILED and native exit code 7.
+.\examples\failure\run_failure.ps1
+```
+
+For the first two demos, start `watch_long_task.ps1` while the demo is still
+running, for example:
+
+```powershell
+.\scripts\watch_long_task.ps1 -StatusPath .\examples\exact-progress\status.json
+```
+
 ## Progress and completion
 
 When the writer provides valid `processed` and `total` counters, the monitor
@@ -53,4 +76,3 @@ NVIDIA telemetry is optional (`-EnableGpu`). It is queried only when
 
 Version **0.1.0** — experimental but usable. MIT licensed. No remote service,
 telemetry, or Python dependency is required.
-

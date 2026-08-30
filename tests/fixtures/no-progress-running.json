@@ -1,0 +1,16 @@
+{
+  "contract_version": "agent-long-task-status-v1",
+  "task": "Contract no exact progress",
+  "stage": "WORKING",
+  "state": "RUNNING",
+  "started_at": "2026-08-31T00:00:00+08:00",
+  "processed": null,
+  "total": null,
+  "unit": null,
+  "target_process_id": null,
+  "supervisor_process_id": null,
+  "checkpoint_state": "NOT_APPLICABLE",
+  "artifact_state": "PENDING",
+  "artifact_validated": false,
+  "last_error": null
+}

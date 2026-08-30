@@ -12,7 +12,10 @@ param(
 
     # Intended for diagnostics and automated examples. It performs one read and
     # writes one health record without entering the interactive loop.
-    [switch]$Once
+    [switch]$Once,
+
+    # Emits the computed observation for offline tests and diagnostics.
+    [switch]$PassThru
 )
 
 Set-StrictMode -Version Latest
@@ -173,7 +176,9 @@ function Get-GpuTelemetry {
 function Write-MonitorScreen {
     param([object]$Status, [object]$Progress, [object]$TargetTelemetry, [object]$SupervisorTelemetry, [object]$GpuTelemetry)
 
-    Clear-Host
+    # Clearing is cosmetic; a redirected or noninteractive host may not have a
+    # console handle and must not turn a healthy observation into an error.
+    try { Clear-Host -ErrorAction Stop } catch { }
     $State = [string](Get-PropertyValue -Object $Status -Name 'state')
     Write-Host ('{0} — {1}' -f (Get-PropertyValue -Object $Status -Name 'task'), $State)
     Write-Host ('Stage: {0}' -f (Get-PropertyValue -Object $Status -Name 'stage'))
@@ -243,6 +248,9 @@ while ($true) {
         }
         Write-HealthAtomically -Path $HealthPath -Health $Health
         Write-MonitorScreen -Status $Status -Progress $Progress -TargetTelemetry $TargetTelemetry -SupervisorTelemetry $SupervisorTelemetry -GpuTelemetry $GpuTelemetry
+        if ($PassThru) {
+            [pscustomobject]@{ status = $Status; progress = $Progress; health_path = $HealthPath }
+        }
 
         $State = [string](Get-PropertyValue -Object $Status -Name 'state')
         $IsTerminal = @('COMPLETED', 'FAILED', 'BLOCKED', 'INTERRUPTED') -contains $State

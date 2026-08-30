@@ -1,0 +1,16 @@
+{
+  "contract_version": "agent-long-task-status-v1",
+  "task": "Contract finalization",
+  "stage": "FINALIZING",
+  "state": "RUNNING",
+  "started_at": "2026-08-31T00:00:00+08:00",
+  "processed": 100,
+  "total": 100,
+  "unit": "items",
+  "target_process_id": null,
+  "supervisor_process_id": null,
+  "checkpoint_state": "VALID",
+  "artifact_state": "PENDING",
+  "artifact_validated": false,
+  "last_error": null
+}
