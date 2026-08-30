@@ -1,0 +1,11 @@
+# Local monitor output and examples
+*.health.json
+*.stdout.log
+*.stderr.log
+examples/**/status.json
+examples/**/artifact.txt
+
+# PowerShell editor and test output
+TestResults.xml
+.vs/
+

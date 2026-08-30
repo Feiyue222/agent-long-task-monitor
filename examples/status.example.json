@@ -1,0 +1,16 @@
+{
+  "contract_version": "agent-long-task-status-v1",
+  "task": "Example Training",
+  "stage": "TRAINING",
+  "state": "RUNNING",
+  "started_at": "2026-08-31T00:30:00+08:00",
+  "processed": 2184320,
+  "total": 4194304,
+  "unit": "examples",
+  "target_process_id": 12345,
+  "supervisor_process_id": 6789,
+  "checkpoint_state": "VALID",
+  "artifact_state": "PENDING",
+  "artifact_validated": false,
+  "last_error": null
+}
