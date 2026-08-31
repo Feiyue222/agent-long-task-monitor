@@ -45,7 +45,8 @@ already become long-running.
 8. Treat terminal success as lifecycle evidence plus artifact validation. A
    vanished process is never success evidence. With valid exact counters,
    numeric 100% additionally requires `COMPLETED` and
-   `artifact_validated: true`.
+   `artifact_validated: true`. If counters are unavailable, a successful
+   terminal completion may still be shown but numeric 100% is never invented.
 
 ## Commands
 

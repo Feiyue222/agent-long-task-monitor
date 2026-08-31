@@ -42,6 +42,10 @@ process, let that process's owner publish the status instead.
 
 ## Final states
 
-`COMPLETED` becomes a true 100% display only with `artifact_validated: true`.
-`FAILED`, `BLOCKED`, and `INTERRUPTED` are terminal and remain visibly distinct.
-`PAUSED` remains observable without being silently treated as a pass.
+`processed == total` alone is not success. When valid exact `processed` /
+`total` counters exist, numeric 100% requires both `COMPLETED` and
+`artifact_validated: true`. When counters are unavailable, successful terminal
+completion may still be shown but numeric 100% is never invented. Process
+disappearance is not success evidence. `FAILED`, `BLOCKED`, and `INTERRUPTED`
+remain visibly distinct; `PAUSED` remains observable without being silently
+treated as a pass.

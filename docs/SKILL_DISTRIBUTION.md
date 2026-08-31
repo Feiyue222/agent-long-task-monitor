@@ -1,6 +1,6 @@
 # Agent Skill distribution
 
-The canonical installable skill is
+The v0.2.0 canonical installable skill is
 [`skills/agent-long-task-monitor/`](../skills/agent-long-task-monitor/).
 
 There is intentionally no repository-root `SKILL.md`. GitHub CLI discovery

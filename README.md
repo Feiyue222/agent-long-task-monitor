@@ -96,16 +96,28 @@ running independently for the human.
 The standards-compliant, self-contained bundle lives at
 [`skills/agent-long-task-monitor/`](skills/agent-long-task-monitor/).
 
-**Current main / pre-v0.2.0:** v0.1.0 does not contain this bundle. Until the
-next tagged release, explicitly pin installation to `main`:
+Install the latest tagged release:
 
 ```powershell
 # Codex
-gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@main --agent codex --scope user
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor --agent codex --scope user
 
 # Claude Code
-gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@main --agent claude-code --scope user
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor --agent claude-code --scope user
 ```
+
+Versionless installation resolves the latest tagged release. For a reproducible
+v0.2.0 install, pin the version explicitly:
+
+```powershell
+# Codex
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@v0.2.0 --agent codex --scope user
+
+# Claude Code
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@v0.2.0 --agent claude-code --scope user
+```
+
+`@main` is for development/main testing, not the stable install path.
 
 ## Quick start
 
@@ -191,5 +203,6 @@ NVIDIA telemetry is optional (`-EnableGpu`). It is queried only when
 
 ## Status
 
-Version **0.1.0** — experimental but usable. MIT licensed. No remote service,
-telemetry, or Python dependency is required.
+Version **0.2.0** — experimental but usable. This release adds the
+standards-compliant, self-contained Agent Skill distribution. MIT licensed. No
+remote service, telemetry, or Python dependency is required.

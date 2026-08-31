@@ -27,14 +27,15 @@ shown.
 
 ## Completion rule
 
-`processed == total` is not success. The only condition eligible for a true
-100% display is `state == "COMPLETED"` **and**
-`artifact_validated == true`. Otherwise the monitor caps the visible value at
-99.99% and marks finalization pending.
+`processed == total` is not success. When valid exact `processed` / `total`
+counters exist, numeric 100% is eligible only when `state == "COMPLETED"`
+**and** `artifact_validated == true`. Otherwise the monitor caps the visible
+value at 99.99% and marks finalization pending.
 
-`COMPLETED` with validated artifacts but null counters is successful lifecycle
-evidence, not numeric 100%. Supervisor command evidence records the executable
-and caller-supplied argument vector under a redaction policy: integrations must
+`COMPLETED` with validated artifacts but null counters may be successful
+lifecycle evidence, but it is not numeric 100%. Process disappearance is never
+success evidence. Supervisor command evidence records the executable and
+caller-supplied argument vector under a redaction policy: integrations must
 redact credentials, tokens, and other secrets before persistence.
 
 ## Monitor health protocol
