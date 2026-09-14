@@ -20,8 +20,8 @@ function Same-Hash {
     (Get-FileHash -LiteralPath $Left -Algorithm SHA256).Hash -eq (Get-FileHash -LiteralPath $Right -Algorithm SHA256).Hash
 }
 
-$runtimeScripts = @('watch_long_task.ps1', 'start_monitor.ps1', 'test_monitor_health.ps1', 'example_supervisor.ps1')
-$referenceDocuments = @('STATUS_PROTOCOL.md', 'INTEGRATION.md', 'ARCHITECTURE.md', 'DESIGN_PRINCIPLES.md')
+$runtimeScripts = @('watch_long_task.ps1', 'start_monitor.ps1', 'test_monitor_health.ps1', 'example_supervisor.ps1', 'progress_protocol.py', 'progress_publisher.py', 'progress_consumer.py', 'progress_identity.py', 'progress_bridge.py', 'progress_layer.ps1', 'progress_emit.py', 'example_progress.ps1', 'demo_progress.py')
+$referenceDocuments = @('STATUS_PROTOCOL.md', 'INTEGRATION.md', 'ARCHITECTURE.md', 'DESIGN_PRINCIPLES.md', 'APPLICATION_PROGRESS_PROTOCOL.md')
 
 foreach ($name in $runtimeScripts) {
     Assert-Contract (Same-Hash (Join-Path $repositoryRoot "scripts\$name") (Join-Path $bundleRoot "scripts\$name")) "packaged runtime matches $name"
@@ -30,6 +30,7 @@ foreach ($name in $referenceDocuments) {
     Assert-Contract (Same-Hash (Join-Path $repositoryRoot "docs\$name") (Join-Path $bundleRoot "references\$name")) "packaged reference matches $name"
 }
 Assert-Contract (Same-Hash (Join-Path $repositoryRoot 'LICENSE') (Join-Path $bundleRoot 'LICENSE.txt')) 'packaged MIT license matches project license'
+Assert-Contract (Same-Hash (Join-Path $repositoryRoot 'examples/application-progress/README.md') (Join-Path $bundleRoot 'examples/application-progress/README.md')) 'packaged progress demo instructions match'
 
 $canonicalSkill = Get-Content -LiteralPath (Join-Path $bundleRoot 'SKILL.md') -Raw
 Assert-Contract ($canonicalSkill -match '(?s)^---.*?name:\s*agent-long-task-monitor' -and $canonicalSkill -match 'license:\s*MIT') 'canonical skill frontmatter present'

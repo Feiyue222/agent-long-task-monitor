@@ -203,6 +203,16 @@ NVIDIA telemetry is optional (`-EnableGpu`). It is queried only when
 
 ## Status
 
+The development branch adds opt-in **application-owned operational progress**,
+`agent-long-task-progress-v1`, while keeping v0.2.0 Layer-1 behavior compatible.
+The application supplies work events; the monitor never derives them from CPU,
+process liveness or its own heartbeat. See the
+[protocol](docs/APPLICATION_PROGRESS_PROTOCOL.md),
+[publisher/consumer usage](docs/INTEGRATION.md#optional-layer-2-python-310), and
+[harmless staged demo](examples/application-progress/README.md).
+Layer 2 requires Python 3.10+; Layer 1 still has no Python dependency. No new
+release or tag is implied by this development feature.
+
 Version **0.2.0** — experimental but usable. This release adds the
 standards-compliant, self-contained Agent Skill distribution. MIT licensed. No
 remote service, telemetry, or Python dependency is required.

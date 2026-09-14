@@ -1,0 +1,7 @@
+# Keep published protocol/module hashes stable across Windows checkouts.
+docs/APPLICATION_PROGRESS_PROTOCOL.md text eol=lf
+scripts/*.py text eol=lf
+tests/*.py text eol=lf
+tests/results/*.json text eol=lf
+skills/agent-long-task-monitor/references/APPLICATION_PROGRESS_PROTOCOL.md text eol=lf
+skills/agent-long-task-monitor/scripts/*.py text eol=lf

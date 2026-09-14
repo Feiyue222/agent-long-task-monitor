@@ -9,3 +9,10 @@ examples/30-second-demo/runtime/
 # PowerShell editor and test output
 TestResults.xml
 .vs/
+__pycache__/
+*.pyc
+tests/.runtime/
+tests/.runtime-layer2/
+tests/.runtime-renderer-*/
+examples/application-progress/runtime*/
+artifacts/local-validation/

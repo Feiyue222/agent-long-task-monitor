@@ -5,6 +5,13 @@ param(
 
     [string]$HealthPath,
 
+    # Optional Layer 2. Python is needed only when explicitly supplied.
+    [string]$ProgressPath,
+    [string]$ProgressPythonExecutable = 'python.exe',
+    [ValidateRange(0.01, 3600)] [double]$ApplicationHeartbeatSeconds = 5,
+    [ValidateRange(0.01, 86400)] [double]$ProgressStaleSeconds = 20,
+    [ValidateRange(0.01, 86400)] [double]$NoProgressWarningSeconds = 120,
+
     [ValidateRange(1, 3600)]
     [int]$RefreshSeconds = 10,
 
@@ -180,6 +187,11 @@ function Write-MonitorScreen {
     # Clearing is cosmetic; a redirected or noninteractive host may not have a
     # console handle and must not turn a healthy observation into an error.
     try { Clear-Host -ErrorAction Stop } catch { }
+    if ($ProgressPath) {
+        Write-Host 'Layer 1 - process/control and monitor health'
+        Write-Host ('Process observation: {0}; Monitor heartbeat: refreshed' -f $TargetTelemetry.Label)
+        Write-Host ('Artifact validated: {0}' -f (Get-PropertyValue -Object $Status -Name 'artifact_validated'))
+    }
     $State = [string](Get-PropertyValue -Object $Status -Name 'state')
     Write-Host ('{0} — {1}' -f (Get-PropertyValue -Object $Status -Name 'task'), $State)
     Write-Host ('Stage: {0}' -f (Get-PropertyValue -Object $Status -Name 'stage'))
@@ -223,6 +235,14 @@ if ([string]::Equals($ResolvedStatusPath, $ResolvedHealthPath, [System.StringCom
 }
 $StatusPath = $ResolvedStatusPath
 $HealthPath = $ResolvedHealthPath
+if ($ProgressPath) {
+    $ProgressPath = [System.IO.Path]::GetFullPath($ProgressPath)
+    if ([string]::Equals($ProgressPath, $HealthPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        Write-Error 'HealthPath must be independent of ProgressPath.'
+        exit 2
+    }
+    . (Join-Path $PSScriptRoot 'progress_layer.ps1')
+}
 $NvidiaSmiPath = $null
 if ($EnableGpu) {
     $NvidiaSmiCommand = Get-Command 'nvidia-smi.exe' -ErrorAction SilentlyContinue
@@ -232,7 +252,10 @@ $RefreshCount = 0
 $PreviousProgress = $null
 $PreviousProcessSamples = @{}
 $MonitorProcessId = Get-CurrentProcessId
+$ApplicationProgressHelper = $null
+$ApplicationProgressUnavailable = $false
 
+try {
 while ($true) {
     try {
         $Status = Read-AuthoritativeStatus -Path $StatusPath
@@ -257,8 +280,27 @@ while ($true) {
         }
         Write-HealthAtomically -Path $HealthPath -Health $Health
         Write-MonitorScreen -Status $Status -Progress $Progress -TargetTelemetry $TargetTelemetry -SupervisorTelemetry $SupervisorTelemetry -GpuTelemetry $GpuTelemetry
+        $ApplicationProgress = $null
+        if ($ProgressPath) {
+            try {
+                if ($ApplicationProgressUnavailable) { throw 'Application progress unavailable.' }
+                if ($null -eq $ApplicationProgressHelper) {
+                    $ApplicationProgressHelper = Open-ApplicationProgress -Path $ProgressPath -PythonExecutable $ProgressPythonExecutable -StaleSeconds $ProgressStaleSeconds -WarningSeconds $NoProgressWarningSeconds -HeartbeatSeconds $ApplicationHeartbeatSeconds
+                }
+                $ApplicationProgress = Read-ApplicationProgress -Helper $ApplicationProgressHelper
+            }
+            catch {
+                $ApplicationProgressUnavailable = $true
+                $ApplicationProgress = [pscustomobject]@{ application='UNKNOWN'; freshness='CONTROL_FAILURE'; snapshot=$null }
+            }
+            Write-ApplicationProgress -Observation $ApplicationProgress
+        }
+        else { Write-Host 'Layer 2: NOT_AVAILABLE' }
         if ($PassThru) {
-            [pscustomobject]@{ status = $Status; progress = $Progress; health_path = $HealthPath }
+            if ($ProgressPath) {
+                [pscustomobject]@{ status = $Status; progress = $Progress; health_path = $HealthPath; application_progress = $ApplicationProgress }
+            }
+            else { [pscustomobject]@{ status = $Status; progress = $Progress; health_path = $HealthPath } }
         }
 
         $State = [string](Get-PropertyValue -Object $Status -Name 'state')
@@ -283,4 +325,8 @@ while ($true) {
     }
     if ($Once) { break }
     Start-Sleep -Seconds $RefreshSeconds
+}
+}
+finally {
+    if ($ProgressPath) { Close-ApplicationProgress -Helper $ApplicationProgressHelper }
 }
