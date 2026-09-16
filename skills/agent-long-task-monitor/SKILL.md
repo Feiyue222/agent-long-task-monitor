@@ -48,6 +48,23 @@ already become long-running.
    `artifact_validated: true`. If counters are unavailable, a successful
    terminal completion may still be shown but numeric 100% is never invented.
 
+## Optional application-owned operational progress
+
+When an application can publish its own work events, use the opt-in
+`agent-long-task-progress-v1` Layer 2. It requires Python 3.10+ and must be
+used with [the Layer-2 protocol](references/APPLICATION_PROGRESS_PROTOCOL.md).
+It can publish stage/substage, exact counters where known, application
+heartbeat, freshness, and no-progress information through the bundled atomic
+publisher and strict consumer.
+
+Layer 2 is additive and observational from the monitor side. Do not infer it
+from CPU, GPU, process liveness, or monitor health; do not use it to authorize
+restart, retry, termination, artifact validation, or Layer-1 completion.
+Layer 1 remains usable without `ProgressPath` and has no Python dependency.
+See [integration guidance](references/INTEGRATION.md#optional-layer-2-python-310)
+and the bundled `examples/application-progress/README.md` for the harmless
+staged demo.
+
 ## Commands
 
 From the installed skill root, launch and verify the monitor:

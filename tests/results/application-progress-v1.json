@@ -1,16 +1,18 @@
 {
   "task_id": "ALTM-APPLICATION-PROGRESS-LAYER2-001",
   "base_sha": "0a928c2d381e52373226c27deae7b1f9e1c4ece2",
-  "branch": "feature/application-progress-v1",
-  "tested_at": "2026-09-14T06:53:58.347758+00:00",
+  "branch": "",
+  "tested_at": "2026-09-16T06:49:41.129940+00:00",
   "head_identity": "Resolve the containing review commit; worktree source bytes are bound below.",
   "changed_paths": [
     ".gitattributes",
     ".gitignore",
+    "CHANGELOG.md",
     "README.md",
     "docs/APPLICATION_PROGRESS_PROTOCOL.md",
     "docs/ARCHITECTURE.md",
     "docs/INTEGRATION.md",
+    "docs/SKILL_DISTRIBUTION.md",
     "examples/application-progress/README.md",
     "scripts/demo_progress.py",
     "scripts/example_progress.ps1",
@@ -23,6 +25,7 @@
     "scripts/progress_publisher.py",
     "scripts/sync_skill_bundle.ps1",
     "scripts/watch_long_task.ps1",
+    "skills/agent-long-task-monitor/SKILL.md",
     "skills/agent-long-task-monitor/examples/application-progress/README.md",
     "skills/agent-long-task-monitor/references/APPLICATION_PROGRESS_PROTOCOL.md",
     "skills/agent-long-task-monitor/references/ARCHITECTURE.md",
@@ -47,10 +50,12 @@
   "source_sha256": {
     ".gitattributes": "91975064b7aa12d1565826a916dfe154199c459face79fd063e1b145c38ac131",
     ".gitignore": "a3ccfe8aa6446a412d876eff42224e90c65f45762ab9335b26590f1b9ce64f90",
-    "README.md": "0b908503423a485cf47dbf97ab383d93514918b7f5ab97ee27c8b97dcd97652d",
+    "CHANGELOG.md": "2d70af6cd0ab0bdaf7493fb7a462e464f456a6ff82ff2be1f31e22c7b714bb08",
+    "README.md": "4ace46a18e6fd0c06bea4ad235886e235179d0ee0d9b4e0eccc3f82c5b320cc6",
     "docs/APPLICATION_PROGRESS_PROTOCOL.md": "b0c10288e575c6273383eba1f601b6a64bc03e08be6c3a4f07756a7292e2dfe9",
     "docs/ARCHITECTURE.md": "f9c6d1c1f4e93d012cb5aa5e0284fc9622762965132ca9fb2eaf051037ed6a2a",
     "docs/INTEGRATION.md": "dfe78dcdb9a02d7cdf85cfda7507a82c45ab45ce8a88e6402ed4203ec913fa8b",
+    "docs/SKILL_DISTRIBUTION.md": "940526f75ec0a41511b692c4ec37a6a51464c1d2dd1d2749af5ba5da03a228fc",
     "examples/application-progress/README.md": "8cc7304459bc084b5d39d1a1b40b7ac0de7fd81b059099f00493e231873b1be0",
     "scripts/demo_progress.py": "07d88710eda12a72f69431235d83666aacbf79f646467a1b9919592b89ac8252",
     "scripts/example_progress.ps1": "8ba1ef807f26e41079ff7d301f9b9373e8523ca70f6fd75ecfaf4519c7b27ab8",
@@ -63,6 +68,7 @@
     "scripts/progress_publisher.py": "601cb00b83d5394d537f2983f6c5bc2cd00b13bb6625d53aea294124ae2fe0b1",
     "scripts/sync_skill_bundle.ps1": "d63bc7cf3457b147a635778e74db67540fd89c8dc27e9d1f10bd40799649f4bc",
     "scripts/watch_long_task.ps1": "e2268884930ff1eee29d6ac5cf6108c97b30ebabcb04df26c6239dab1107fed9",
+    "skills/agent-long-task-monitor/SKILL.md": "beb51be86d75d3c420a81b2b9d24e34d3e9430a45f0e3c96c918d4efb68860b3",
     "skills/agent-long-task-monitor/examples/application-progress/README.md": "8cc7304459bc084b5d39d1a1b40b7ac0de7fd81b059099f00493e231873b1be0",
     "skills/agent-long-task-monitor/references/APPLICATION_PROGRESS_PROTOCOL.md": "b0c10288e575c6273383eba1f601b6a64bc03e08be6c3a4f07756a7292e2dfe9",
     "skills/agent-long-task-monitor/references/ARCHITECTURE.md": "f9c6d1c1f4e93d012cb5aa5e0284fc9622762965132ca9fb2eaf051037ed6a2a",
@@ -105,8 +111,8 @@
       "exit_code": 0,
       "test_count": 57,
       "result": "PASS",
-      "output_sha256": "f7a855832c4886011e030feda595e1f75fd379a85b3fb20c5b961d4b54dd041e",
-      "output": "----------------------------------------------------------------------\r\nRan 57 tests in 2.678s\r\n\r\nOK\r\n"
+      "output_sha256": "1386e1ef9806181ef908bec2dd45f78319d44bac0702a6cd9ce58f444641aa41",
+      "output": "----------------------------------------------------------------------\r\nRan 57 tests in 2.891s\r\n\r\nOK\r\n"
     },
     {
       "name": "layer1-powershell7",
@@ -205,40 +211,7 @@
       "output": "PASS: packaged runtime matches watch_long_task.ps1\r\nPASS: packaged runtime matches start_monitor.ps1\r\nPASS: packaged runtime matches test_monitor_health.ps1\r\nPASS: packaged runtime matches example_supervisor.ps1\r\nPASS: packaged runtime matches progress_protocol.py\r\nPASS: packaged runtime matches progress_publisher.py\r\nPASS: packaged runtime matches progress_consumer.py\r\nPASS: packaged runtime matches progress_identity.py\r\nPASS: packaged runtime matches progress_bridge.py\r\nPASS: packaged runtime matches progress_layer.ps1\r\nPASS: packaged runtime matches progress_emit.py\r\nPASS: packaged runtime matches example_progress.ps1\r\nPASS: packaged runtime matches demo_progress.py\r\nPASS: packaged reference matches STATUS_PROTOCOL.md\r\nPASS: packaged reference matches INTEGRATION.md\r\nPASS: packaged reference matches ARCHITECTURE.md\r\nPASS: packaged reference matches DESIGN_PRINCIPLES.md\r\nPASS: packaged reference matches APPLICATION_PROGRESS_PROTOCOL.md\r\nPASS: packaged MIT license matches project license\r\nPASS: packaged progress demo instructions match\r\nPASS: canonical skill frontmatter present\r\nPASS: canonical skill has no repository-layout coupling\r\nPASS: root SKILL.md absent to prevent duplicate discovery\r\nPASS: installed bundle has no source repository path dependency\r\nBundle sync tests passed: 24\r\n"
     }
   ],
-  "prior_failed_attempts": [
-    {
-      "name": "layer2-renderer-powershell51",
-      "argv": [
-        "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "tests/test_layer2_renderer.ps1"
-      ],
-      "exit_code": 1,
-      "test_count": 0,
-      "result": "FAIL",
-      "output_sha256": "ba33106e85536d2b9d65df616480a3369d4c7882abab8c2823efc05f10c1a3d0",
-      "output": "F:\\\u5c0f\u76d1\u63a7\\tests\\test_layer2_renderer.ps1 : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, sc\r\nript file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is corr\r\nect and try again.\r\n    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [test_layer2_renderer.ps1], CommandNotFoundExcepti \r\n   on\r\n    + FullyQualifiedErrorId : CommandNotFoundException,test_layer2_renderer.ps1\r\n \r\n"
-    },
-    {
-      "name": "layer2-renderer-powershell51",
-      "argv": [
-        "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "tests/test_layer2_renderer.ps1"
-      ],
-      "exit_code": 1,
-      "test_count": 0,
-      "result": "FAIL",
-      "output_sha256": "ba33106e85536d2b9d65df616480a3369d4c7882abab8c2823efc05f10c1a3d0",
-      "output": "F:\\\u5c0f\u76d1\u63a7\\tests\\test_layer2_renderer.ps1 : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, sc\r\nript file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is corr\r\nect and try again.\r\n    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [test_layer2_renderer.ps1], CommandNotFoundExcepti \r\n   on\r\n    + FullyQualifiedErrorId : CommandNotFoundException,test_layer2_renderer.ps1\r\n \r\n"
-    }
-  ],
+  "prior_failed_attempts": [],
   "runner_environment_note": "Windows PowerShell 5.1 reconstructs its native PSModulePath; other environment inherited. Prior PASS results reused only after source byte checks.",
   "release_tag_created": false,
   "other_project_mutated": false,

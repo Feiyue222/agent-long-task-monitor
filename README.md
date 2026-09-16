@@ -107,14 +107,14 @@ gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor --age
 ```
 
 Versionless installation resolves the latest tagged release. For a reproducible
-v0.2.0 install, pin the version explicitly:
+v0.3.0 install, pin the version explicitly:
 
 ```powershell
 # Codex
-gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@v0.2.0 --agent codex --scope user
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@v0.3.0 --agent codex --scope user
 
 # Claude Code
-gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@v0.2.0 --agent claude-code --scope user
+gh skill install Feiyue222/agent-long-task-monitor agent-long-task-monitor@v0.3.0 --agent claude-code --scope user
 ```
 
 `@main` is for development/main testing, not the stable install path.
@@ -149,6 +149,24 @@ unavailable`. It never infers completion percentage from elapsed time.
 and `artifact_validated == true`. If exact counters are unavailable, successful
 terminal completion may still be shown, but the monitor never invents numeric
 100%. Process disappearance is never success evidence.
+
+## Optional application-owned operational progress
+
+v0.3.0 adds `agent-long-task-progress-v1`, an opt-in Layer 2 for applications
+that can publish their own operational work events. It carries stage/substage,
+exact completed/total units where known, an application heartbeat, freshness,
+and no-progress warnings. Percentage, rate, and ETA come only from those
+authoritative application events; the monitor never guesses them from CPU, GPU,
+process liveness, or its own heartbeat.
+
+Layer 1 remains the authoritative lifecycle/control layer: status, monitor
+health, artifact validation, and the one bounded health check. Layer 2 is
+read-only from the monitor side and cannot authorize completion, restart,
+retry, termination, or artifact validation. Layer 1 works without `ProgressPath`
+and has no Python dependency. Layer 2 requires Python 3.10+; see the
+[protocol](docs/APPLICATION_PROGRESS_PROTOCOL.md),
+[integration guidance](docs/INTEGRATION.md#optional-layer-2-python-310), and
+[harmless demo](examples/application-progress/README.md).
 
 ## Local and read-only
 
@@ -203,16 +221,10 @@ NVIDIA telemetry is optional (`-EnableGpu`). It is queried only when
 
 ## Status
 
-The development branch adds opt-in **application-owned operational progress**,
-`agent-long-task-progress-v1`, while keeping v0.2.0 Layer-1 behavior compatible.
-The application supplies work events; the monitor never derives them from CPU,
-process liveness or its own heartbeat. See the
-[protocol](docs/APPLICATION_PROGRESS_PROTOCOL.md),
-[publisher/consumer usage](docs/INTEGRATION.md#optional-layer-2-python-310), and
-[harmless staged demo](examples/application-progress/README.md).
-Layer 2 requires Python 3.10+; Layer 1 still has no Python dependency. No new
-release or tag is implied by this development feature.
-
-Version **0.2.0** — experimental but usable. This release adds the
-standards-compliant, self-contained Agent Skill distribution. MIT licensed. No
-remote service, telemetry, or Python dependency is required.
+Version **0.3.0** — experimental but usable. v0.2.0 introduced the
+standards-compliant, self-contained Agent Skill distribution; v0.3.0 adds the
+optional application-owned operational progress layer while keeping Layer-1
+behavior backward-compatible. Field-tested in a real long-running local
+workflow in addition to the automated contract suite. MIT licensed. No remote
+service, telemetry, database, or SaaS requirement; Layer 1 has no Python
+dependency and Layer 2 requires Python 3.10+.
